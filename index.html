@@ -56,8 +56,24 @@
     .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,170,0,.28); }
     .btn:disabled { opacity: .7; cursor: not-allowed; }
     @media (max-width: 900px) {
+      .layout { flex-direction: column; }
+      .left { flex: none; max-width: 100%; width: 100%; height: 50vh; }
+      .frame { width: 100%; height: 100%; }
+      .right { padding: 20px; }
       .cards { grid-template-columns: 1fr; }
       .form { grid-template-columns: 1fr; }
+    }
+    
+    @media (max-width: 600px) {
+      .left { height: 40vh; }
+      .right { padding: 15px; }
+      .header h1 { font-size: 24px; }
+      .header .tag { font-size: 14px; }
+      .header .desc { font-size: 14px; }
+      .cardx { padding: 12px; }
+      .cardx h3 { font-size: 16px; }
+      .price { font-size: 20px; }
+      .reserve { padding: 12px; }
     }
     /* Lightbox */
     .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
