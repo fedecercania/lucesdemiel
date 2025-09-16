@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hexágono</title>
+  <style>
+    html, body {
+      height: 100%; margin: 0;
+      background: #fff8e1;
+    }
+    body { margin: 0; color: #6d0013; font-family: Georgia, "Times New Roman", serif; }
+    :root { --s: min(32vmin, 260px); }
+    .layout { display: flex; min-height: 100vh; }
+    .left { flex: 0 0 305px; max-width: 305px; overflow: hidden; }
+    .right { flex: 1; display: block; padding: 28px; overflow-y: auto; }
+    .frame { width: 305px; height: 100vh; border: 0; display: block; overflow: hidden; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .logo { width: 34px; height: 34px; border-radius: 8px; background: conic-gradient(from 0deg, #ffd54f, #ffb300, #ffa000, #ffca28, #ffd54f); border: 2px solid #7b4b27; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+    h1 { margin: 0; color: currentColor; letter-spacing: .2px; font-size: clamp(22px, 3.6vw, 32px); }
+    .tag { margin: 6px 0 12px; color: currentColor; font-weight: 800; letter-spacing: .2px; }
+    ul { margin: 0; padding-left: 16px; color: #1faa00; font-weight: 800; }
+    .note { margin-top: 12px; color: #6b7280; }
+    /* Landing right styles */
+    .header { position: sticky; top: 0; padding-bottom: 12px; margin-bottom: 18px; }
+    .desc { color: #4b5563; line-height: 1.7; max-width: 68ch; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 18px 0; }
+    .cardx { position: relative; background:
+      linear-gradient(135deg, #ffffff 0%, #f8f4e6 50%, #e8f5e8 100%);
+      border: 1px solid #f1e2b6; border-radius: 16px; padding: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .cardx::after { content: ""; position: absolute; inset: 0; border-radius: 16px; padding: 1px;
+      background: linear-gradient(135deg, #1faa00, #7b4b27);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; 
+      pointer-events: none; }
+    .cardx:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,.10); }
+    .cardx h3 { margin: 0 0 6px; color: currentColor; font-size: 18px; }
+    .price { font-weight: 900; color: #1faa00; font-size: 24px; }
+    .thumbs { display: none; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .thumbs img { width: 100%; height: 80px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
+    .cardx.open .thumbs { display: grid; }
+    .view-btn { margin-top: 10px; display: inline-block; color: #1faa00; font-weight: 800; cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
+    .reserve { background: #ffffff; border: 1px solid #f1e2b6; border-radius: 16px; padding: 16px; margin: 10px 0 28px; box-shadow: 0 10px 24px rgba(0,0,0,.05); }
+    .reserve h3 { margin: 0 0 10px; color: currentColor; }
+    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .form .full { grid-column: 1 / -1; }
+    .form > div { display: flex; flex-direction: column; }
+    .form label { display: block; font-weight: 700; color: currentColor; margin-bottom: 6px; font-size: 14px; }
+    .form input, .form select, .form textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e5e7eb; background: #fffdf7; transition: border-color .15s ease, box-shadow .15s ease; font-size: 14px; box-sizing: border-box; }
+    .form input:focus, .form select:focus, .form textarea:focus { outline: none; border-color: #1faa00; box-shadow: 0 0 0 4px rgba(31,170,0,.12); }
+    .form textarea { min-height: 80px; resize: vertical; }
+    .actions { margin-top: 10px; }
+    .btn { background: #1faa00; color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 10px 22px rgba(31,170,0,.24); transition: transform .12s ease, box-shadow .12s ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,170,0,.28); }
+    .btn:disabled { opacity: .7; cursor: not-allowed; }
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr; }
+      .form { grid-template-columns: 1fr; }
+    }
+    /* Lightbox */
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .lightbox.open { display: flex; }
+    .lightbox-content { background: #ffffff; border-radius: 16px; padding: 16px; max-width: 900px; width: min(90vw, 900px); max-height: 90vh; overflow: auto; box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+    .lightbox-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .lightbox-title { margin: 0; color: #6d0013; font-family: Georgia, "Times New Roman", serif; }
+    .lightbox-close { background: none; border: 0; color: #6d0013; font-weight: 900; font-size: 18px; cursor: pointer; }
+    .lightbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .lightbox-grid img { width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 12px; border: 1px solid #e5e7eb; background: #fff; }
+    @media (max-width: 700px) { .lightbox-grid { grid-template-columns: 1fr 1fr; } .lightbox-grid img { height: auto; max-height: 250px; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="left">
+      <iframe class="frame" src="./panal.html" title="Panal LucesdeMiel"></iframe>
+    </div>
+    <div class="right">
+      <div class="header">
+        <div class="brand"><div aria-hidden="true"></div><h1>Luces de miel</h1></div>
+        <div class="tag">Velas artesanales de miel</div>
+        <p class="desc">En Luces de miel elaboramos velas artesanales con cera de miel, luz cálida y aromas naturales. Hechas a mano en Ciudad de la Costa, Uruguay, con cuidado en cada detalle para acompañar tus espacios con calidez y color.</p>
+      </div>
+
+      <section class="prices">
+        <div class="cards">
+          <div class="cardx" data-gallery="una">
+            <h3>Una vela</h3>
+            <div class="price">$50</div>
+            <div class="note">Ideal para un regalo pequeño o prueba.</div>
+            <button class="view-btn" type="button" onclick="mostrarImagenes('una')">Ver imágenes</button>
+           
+          </div>
+          <div class="cardx" data-gallery="dos">
+            <h3>Dos velas</h3>
+            <div class="price">$80</div>
+            <div class="note">Combina aromas o duplica la calidez.</div>
+            <button class="view-btn" type="button" onclick="mostrarImagenes('dos')">Ver imágenes</button>
+           
+          </div>
+          <div class="cardx" data-gallery="tres">
+            <h3>Tres velas</h3>
+            <div class="price">$100</div>
+            <div class="note">La opción favorita para ambientar.</div>
+            <button class="view-btn" type="button" onclick="mostrarImagenes('tres')">Ver imágenes</button>
+            
+          </div>
+        </div>
+        
+      </section>
+
+      <section class="reserve">
+        <h3>Hacé tu reserva</h3>
+        <form class="form" onsubmit="event.preventDefault(); enviarReserva();">
+          <div>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required />
+          </div>
+          <div>
+            <label for="contacto">Contacto</label>
+            <input id="contacto" name="contacto" type="tel" placeholder="WhatsApp o teléfono" required />
+          </div>
+          <div>
+            <label for="cantidad">Cantidad</label>
+            <select id="cantidad" name="cantidad" required>
+              <option value="1">Una vela ($50)</option>
+              <option value="2">Dos velas ($80)</option>
+              <option value="3">Tres velas ($100)</option>
+            </select>
+          </div>
+          <div>
+            <label for="zona">Zona</label>
+            <input id="zona" name="zona" type="text" placeholder="Tu barrio / zona" />
+          </div>
+          <div class="full">
+            <label for="mensaje">Comentario</label>
+            <textarea id="mensaje" name="mensaje" placeholder="Aromas, horarios, detalles…"></textarea>
+          </div>
+          <div class="full actions">
+            <button type="submit" class="btn">📱 Reservar por WhatsApp</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="lightbox-content">
+      <div class="lightbox-head">
+        <h3 id="lightbox-title" class="lightbox-title">Imágenes</h3>
+        <button class="lightbox-close" aria-label="Cerrar">Cerrar ✕</button>
+      </div>
+      <div class="lightbox-grid" id="lightbox-grid"></div>
+    </div>
+  </div>
+  
+  <script>
+    function mostrarImagenes(tipo) {
+      const lightbox = document.getElementById('lightbox');
+      const grid = document.getElementById('lightbox-grid');
+      const title = document.getElementById('lightbox-title');
+      
+      grid.innerHTML = '';
+      let imgs = [];
+      
+      if (tipo === 'una') {
+        title.textContent = 'Una vela';
+        imgs = ['./fotos/UnaVela_1.jpeg', './fotos/UnaVela_2.jpeg', './fotos/UnaVela_3.jpeg'];
+      } else if (tipo === 'dos') {
+        title.textContent = 'Dos velas';
+        imgs = ['./fotos/DosVelas_1.jpeg', './fotos/DosVelas_2.jpeg', './fotos/DosVelas_3.jpeg'];
+      } else if (tipo === 'tres') {
+        title.textContent = 'Tres velas';
+        imgs = ['./fotos/TresVelas_1.jpeg', './fotos/TresVelas_2.jpeg', './fotos/TresVelas_3.jpeg'];
+      }
+      
+      imgs.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = title.textContent;
+        grid.appendChild(img);
+      });
+      
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
+    }
+    
+    function enviarReserva() {
+      const nombre = document.getElementById('nombre').value;
+      const contacto = document.getElementById('contacto').value;
+      const cantidad = document.getElementById('cantidad').value;
+      const zona = document.getElementById('zona').value;
+      const mensaje = document.getElementById('mensaje').value;
+      
+      const opciones = {
+        '1': '🕯️ Una vela ($50)',
+        '2': '🕯️🕯️ Dos velas ($80)',
+        '3': '🕯️🕯️🕯️ Tres velas ($100)'
+      };
+      
+      let mensajeWhatsApp = `🕯️ *Reserva Luces de Miel* 🍯
+
+👤 *Nombre:* ${nombre}
+📱 *Contacto:* ${contacto}
+${opciones[cantidad]}
+📍 *Zona:* ${zona || 'No especificada'}`;
+
+      if (mensaje.trim()) {
+        mensajeWhatsApp += `\n💬 *Comentarios:* ${mensaje}`;
+      }
+      
+      mensajeWhatsApp += `\n\n¡Hola! Me interesa hacer una reserva de velas artesanales.`;
+      
+      const telefono = '59894769587';
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensajeWhatsApp)}`;
+      
+      window.open(url, '_blank');
+    }
+    
+    // Cerrar lightbox
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.lightbox-close') || e.target.id === 'lightbox') {
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden', 'true');
+      }
+    });
+  </script>
+</body>
+</html>
+
+

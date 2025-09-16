@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panal aislado</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: #fff8e1; overflow: hidden; }
+    body { display: block; }
+    :root { --s: 200px; }
+    .stage { position: relative; }
+    .hexagon { position: absolute; width: var(--s); height: var(--s); background: radial-gradient(circle at 35% 30%, #ffe082, #ffc107 55%, #ffb300 100%); clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); overflow: hidden; }
+    .hexagon .img { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .18s ease; clip-path: inherit; animation: reveal 8s infinite ease-in-out; }
+    @keyframes reveal { 0% { opacity: 1; } 62.5% { opacity: 1; } 70% { opacity: 0; } 100% { opacity: 0; } }
+    .stage .hexagon:nth-child(1) .img { animation-delay: 0s; }
+    .stage .hexagon:nth-child(2) .img { animation-delay: .8s; }
+    .stage .hexagon:nth-child(3) .img { animation-delay: 1.6s; }
+    .stage .hexagon:nth-child(4) .img { animation-delay: 2.4s; }
+    .stage .hexagon:nth-child(5) .img { animation-delay: 3.2s; }
+    .stage .hexagon:nth-child(6) .img { animation-delay: 4s; }
+    .stage .hexagon:nth-child(7) .img { animation-delay: 4.8s; }
+    .stage .hexagon:nth-child(8) .img { animation-delay: 5.6s; }
+    .stage .hexagon:nth-child(9) .img { animation-delay: 6.4s; }
+    .stage .hexagon:nth-child(10) .img { animation-delay: 7.2s; }
+    .stage .hexagon:nth-child(11) .img { animation-delay: 8s; }
+  </style>
+</head>
+<body>
+  <div class="stage" aria-label="Escenario de hexágonos">
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(-0.51 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_1.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: 0;"><div class="img" style="background-image:url('./fotos/DosVelas_1.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(0.51 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_1.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(1.02 * var(--s));"><div class="img" style="background-image:url('./fotos/VelaGorda_1.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(1.53 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_2.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(2.04 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_3.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(2.55 * var(--s));"><div class="img" style="background-image:url('./fotos/DosVelas_2.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(3.06 * var(--s));"><div class="img" style="background-image:url('./fotos/DosVelas_3.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(3.57 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_2.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(4.08 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_3.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(4.59 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_4.jpeg')"></div></div>
+  </div>
+</body>
+</html>
+
+
