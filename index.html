@@ -46,8 +46,9 @@
     .pickup-info { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
     .pickup-point h4 { margin: 0 0 6px; color: currentColor; }
     .pickup-point p { margin: 0; line-height: 1.5; }
-    .delivery-map { width: 100%; max-width: 400px; height: auto; border-radius: 12px; border: 1px solid #e5e7eb; margin: 12px 0; }
+    .delivery-map { width: 100%; height: auto; border-radius: 12px; border: 1px solid #e5e7eb; margin: 12px 0; }
     .delivery-note { margin: 12px 0 6px; color: #1faa00; font-weight: 800; }
+    .precio-display { margin-top: 6px; font-weight: 800; color: #1faa00; font-size: 16px; }
     .reserve h3 { margin: 0 0 10px; color: currentColor; }
     .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form .full { grid-column: 1 / -1; }
@@ -145,7 +146,7 @@
       <section class="delivery">
         <h3>Zona de entregas</h3>
         <div class="delivery-info">
-          <img src="./entrega/Captura de pantalla 2025-09-20 a las 12.04.23 p. m..png" alt="Mapa zona de entregas" class="delivery-map" />
+          <img src="./mapa-entregas.png" alt="Mapa zona de entregas" class="delivery-map" />
           <p class="delivery-note">🚚 <strong>Monto mínimo de entrega: $250</strong></p>
           <p class="note">Entregamos en la zona marcada. Consultá disponibilidad de horarios.</p>
         </div>
@@ -163,21 +164,21 @@
             <input id="contacto" name="contacto" type="tel" placeholder="WhatsApp o teléfono" required />
           </div>
           <div>
-            <label for="cantidad">Producto</label>
-            <select id="cantidad" name="cantidad" required>
-              <option value="delgada1">Vela delgada - 1 unidad ($50)</option>
-              <option value="delgada2">Velas delgadas - 2 unidades ($80)</option>
-              <option value="gruesa1">Vela gruesa - 1 unidad ($80)</option>
-              <option value="gruesa2">Velas gruesas - 2 unidades ($120)</option>
+            <label for="tipo">Tipo de vela</label>
+            <select id="tipo" name="tipo" required onchange="calcularPrecio()">
+              <option value="">Seleccionar tipo</option>
+              <option value="delgada">Delgada (10x1.5 cm)</option>
+              <option value="gruesa">Gruesa (5x3 cm)</option>
             </select>
+          </div>
+          <div>
+            <label for="cantidad">Cantidad</label>
+            <input id="cantidad" name="cantidad" type="number" min="1" value="2" required onchange="calcularPrecio()" />
+            <div id="precio-total" class="precio-display"></div>
           </div>
           <div>
             <label for="zona">Zona</label>
             <input id="zona" name="zona" type="text" placeholder="Tu barrio / zona" />
-          </div>
-          <div class="full">
-            <label for="mensaje">Comentario</label>
-            <textarea id="mensaje" name="mensaje" placeholder="Aromas, horarios, detalles…"></textarea>
           </div>
           <div class="full actions">
             <button type="submit" class="btn">📱 Reservar por WhatsApp</button>
@@ -236,30 +237,52 @@
       lightbox.setAttribute('aria-hidden', 'false');
     }
     
+    function calcularPrecio() {
+      const tipo = document.getElementById('tipo').value;
+      const cantidad = parseInt(document.getElementById('cantidad').value) || 0;
+      const display = document.getElementById('precio-total');
+      
+      if (!tipo || cantidad <= 0) {
+        display.textContent = '';
+        return;
+      }
+      
+      // Precios base: delgadas 1×$50, 2×$80 | gruesas 1×$80, 2×$120
+      let precio = 0;
+      if (tipo === 'delgada') {
+        if (cantidad === 1) precio = 50;
+        else if (cantidad === 2) precio = 80;
+        else precio = 50 + ((cantidad - 1) * 30); // $30 por cada adicional
+      } else if (tipo === 'gruesa') {
+        if (cantidad === 1) precio = 80;
+        else if (cantidad === 2) precio = 120;
+        else precio = 80 + ((cantidad - 1) * 40); // $40 por cada adicional
+      }
+      
+      display.textContent = `Total: $${precio}`;
+    }
+
     function enviarReserva() {
       const nombre = document.getElementById('nombre').value;
       const contacto = document.getElementById('contacto').value;
+      const tipo = document.getElementById('tipo').value;
       const cantidad = document.getElementById('cantidad').value;
       const zona = document.getElementById('zona').value;
-      const mensaje = document.getElementById('mensaje').value;
       
-      const opciones = {
-        'delgada1': '🕯️ Vela delgada 10x1.5cm ($50)',
-        'delgada2': '🕯️🕯️ Velas delgadas 10x1.5cm ($80)',
-        'gruesa1': '🕯️ Vela gruesa 5x3cm ($80)',
-        'gruesa2': '🕯️🕯️ Velas gruesas 5x3cm ($120)'
-      };
+      // Calcular precio
+      calcularPrecio();
+      const precioTexto = document.getElementById('precio-total').textContent;
+      
+      const tipoTexto = tipo === 'delgada' ? 'delgadas (10x1.5cm)' : 'gruesas (5x3cm)';
+      const cantidadEmoji = '🕯️'.repeat(Math.min(cantidad, 5));
+      const productoTexto = `${cantidadEmoji} ${cantidad} vela${cantidad > 1 ? 's' : ''} ${tipoTexto} - ${precioTexto}`;
       
       let mensajeWhatsApp = `🕯️ *Reserva Luces de Miel* 🍯
 
 👤 *Nombre:* ${nombre}
 📱 *Contacto:* ${contacto}
-${opciones[cantidad]}
+${productoTexto}
 📍 *Zona:* ${zona || 'No especificada'}`;
-
-      if (mensaje.trim()) {
-        mensajeWhatsApp += `\n💬 *Comentarios:* ${mensaje}`;
-      }
       
       mensajeWhatsApp += `\n\n¡Hola! Me interesa hacer una reserva de velas artesanales.`;
       
