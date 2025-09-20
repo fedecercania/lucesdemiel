@@ -42,7 +42,12 @@
     .thumbs img { width: 100%; height: 80px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
     .cardx.open .thumbs { display: grid; }
     .view-btn { margin-top: 10px; display: inline-block; color: #1faa00; font-weight: 800; cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; }
-    .reserve { background: #ffffff; border: 1px solid #f1e2b6; border-radius: 16px; padding: 16px; margin: 10px 0 28px; box-shadow: 0 10px 24px rgba(0,0,0,.05); }
+    .pickup, .delivery, .reserve { background: #ffffff; border: 1px solid #f1e2b6; border-radius: 16px; padding: 16px; margin: 10px 0 28px; box-shadow: 0 10px 24px rgba(0,0,0,.05); }
+    .pickup-info { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+    .pickup-point h4 { margin: 0 0 6px; color: currentColor; }
+    .pickup-point p { margin: 0; line-height: 1.5; }
+    .delivery-map { width: 100%; max-width: 400px; height: auto; border-radius: 12px; border: 1px solid #e5e7eb; margin: 12px 0; }
+    .delivery-note { margin: 12px 0 6px; color: #1faa00; font-weight: 800; }
     .reserve h3 { margin: 0 0 10px; color: currentColor; }
     .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form .full { grid-column: 1 / -1; }
@@ -64,6 +69,7 @@
       .right { padding: 20px; }
       .cards { grid-template-columns: 1fr; }
       .form { grid-template-columns: 1fr; }
+      .pickup-info { grid-template-columns: 1fr; }
     }
     
     @media (max-width: 600px) {
@@ -103,29 +109,46 @@
 
       <section class="prices">
         <div class="cards">
-          <div class="cardx" data-gallery="una">
-            <h3>Una vela</h3>
-            <div class="price">$50</div>
-            <div class="note">Ideal para un regalo pequeño o prueba.</div>
-            <button class="view-btn" type="button" onclick="mostrarImagenes('una')">Ver imágenes</button>
+          <div class="cardx" data-gallery="delgadas">
+            <h3>Velas delgadas (10x1.5 cm)</h3>
+            <div class="price">1 por $50 • 2 por $80</div>
+            <div class="note">Elegantes y estilizadas, perfectas para decorar.</div>
+            <button class="view-btn" type="button" onclick="mostrarImagenes('delgadas')">Ver imágenes</button>
            
           </div>
-          <div class="cardx" data-gallery="dos">
-            <h3>Dos velas</h3>
-            <div class="price">$80</div>
-            <div class="note">Combina aromas o duplica la calidez.</div>
-            <button class="view-btn" type="button" onclick="mostrarImagenes('dos')">Ver imágenes</button>
+          <div class="cardx" data-gallery="gruesas">
+            <h3>Velas gruesas (5x3 cm)</h3>
+            <div class="price">1 por $80 • 2 por $120</div>
+            <div class="note">Más duraderas, aroma intenso y luz cálida.</div>
+            <button class="view-btn" type="button" onclick="mostrarImagenes('gruesas')">Ver imágenes</button>
            
-          </div>
-          <div class="cardx" data-gallery="tres">
-            <h3>Tres velas</h3>
-            <div class="price">$100</div>
-            <div class="note">La opción favorita para ambientar.</div>
-            <button class="view-btn" type="button" onclick="mostrarImagenes('tres')">Ver imágenes</button>
-            
           </div>
         </div>
         
+      </section>
+
+      <section class="pickup">
+        <h3>Puntos de retiro</h3>
+        <div class="pickup-info">
+          <div class="pickup-point">
+            <h4>📍 Pinar Sur</h4>
+            <p>Océano Pacífico Manzana F9 S1<br>Esquina Venezuela</p>
+          </div>
+          <div class="pickup-point">
+            <h4>📍 Pinar Norte</h4>
+            <p>18 de Julio Manzana 63 S31</p>
+          </div>
+        </div>
+        <p class="note">Retiro con previa coordinación por WhatsApp.</p>
+      </section>
+
+      <section class="delivery">
+        <h3>Zona de entregas</h3>
+        <div class="delivery-info">
+          <img src="./entrega/Captura de pantalla 2025-09-20 a las 12.04.23 p. m..png" alt="Mapa zona de entregas" class="delivery-map" />
+          <p class="delivery-note">🚚 <strong>Monto mínimo de entrega: $250</strong></p>
+          <p class="note">Entregamos en la zona marcada. Consultá disponibilidad de horarios.</p>
+        </div>
       </section>
 
       <section class="reserve">
@@ -140,11 +163,12 @@
             <input id="contacto" name="contacto" type="tel" placeholder="WhatsApp o teléfono" required />
           </div>
           <div>
-            <label for="cantidad">Cantidad</label>
+            <label for="cantidad">Producto</label>
             <select id="cantidad" name="cantidad" required>
-              <option value="1">Una vela ($50)</option>
-              <option value="2">Dos velas ($80)</option>
-              <option value="3">Tres velas ($100)</option>
+              <option value="delgada1">Vela delgada - 1 unidad ($50)</option>
+              <option value="delgada2">Velas delgadas - 2 unidades ($80)</option>
+              <option value="gruesa1">Vela gruesa - 1 unidad ($80)</option>
+              <option value="gruesa2">Velas gruesas - 2 unidades ($120)</option>
             </select>
           </div>
           <div>
@@ -193,15 +217,12 @@
       grid.innerHTML = '';
       let imgs = [];
       
-      if (tipo === 'una') {
-        title.textContent = 'Una vela';
+      if (tipo === 'delgadas') {
+        title.textContent = 'Velas delgadas (10x1.5 cm)';
         imgs = ['./fotos/UnaVela_1.jpeg', './fotos/UnaVela_2.jpeg', './fotos/UnaVela_3.jpeg'];
-      } else if (tipo === 'dos') {
-        title.textContent = 'Dos velas';
-        imgs = ['./fotos/DosVelas_1.jpeg', './fotos/DosVelas_2.jpeg', './fotos/DosVelas_3.jpeg'];
-      } else if (tipo === 'tres') {
-        title.textContent = 'Tres velas';
-        imgs = ['./fotos/TresVelas_1.jpeg', './fotos/TresVelas_2.jpeg', './fotos/TresVelas_3.jpeg'];
+      } else if (tipo === 'gruesas') {
+        title.textContent = 'Velas gruesas (5x3 cm)';
+        imgs = ['./fotos/VelaGorda_1.jpeg', './fotos/VelaGorda_2.jpeg', './fotos/DosVelas_1.jpeg'];
       }
       
       imgs.forEach(src => {
@@ -223,9 +244,10 @@
       const mensaje = document.getElementById('mensaje').value;
       
       const opciones = {
-        '1': '🕯️ Una vela ($50)',
-        '2': '🕯️🕯️ Dos velas ($80)',
-        '3': '🕯️🕯️🕯️ Tres velas ($100)'
+        'delgada1': '🕯️ Vela delgada 10x1.5cm ($50)',
+        'delgada2': '🕯️🕯️ Velas delgadas 10x1.5cm ($80)',
+        'gruesa1': '🕯️ Vela gruesa 5x3cm ($80)',
+        'gruesa2': '🕯️🕯️ Velas gruesas 5x3cm ($120)'
       };
       
       let mensajeWhatsApp = `🕯️ *Reserva Luces de Miel* 🍯
@@ -241,7 +263,7 @@ ${opciones[cantidad]}
       
       mensajeWhatsApp += `\n\n¡Hola! Me interesa hacer una reserva de velas artesanales.`;
       
-      const telefono = '59894769587';
+      const telefono = '59894948283';
       const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensajeWhatsApp)}`;
       
       window.open(url, '_blank');
