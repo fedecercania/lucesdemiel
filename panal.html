@@ -27,18 +27,57 @@
 </head>
 <body>
   <div class="stage" aria-label="Escenario de hexágonos">
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(-0.51 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_1.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: 0;"><div class="img" style="background-image:url('./fotos/DosVelas_1.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(0.51 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_1.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(1.02 * var(--s));"><div class="img" style="background-image:url('./fotos/VelaGorda_1.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(1.53 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_2.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(2.04 * var(--s));"><div class="img" style="background-image:url('./fotos/UnaVela_3.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(2.55 * var(--s));"><div class="img" style="background-image:url('./fotos/DosVelas_2.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(3.06 * var(--s));"><div class="img" style="background-image:url('./fotos/DosVelas_3.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(3.57 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_2.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(4.08 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_3.jpeg')"></div></div>
-    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(4.59 * var(--s));"><div class="img" style="background-image:url('./fotos/TresVelas_4.jpeg')"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(-0.51 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: 0;"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(0.51 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(1.02 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(1.53 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(2.04 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(2.55 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(3.06 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(3.57 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(-0.25 * var(--s)); top: calc(4.08 * var(--s));"><div class="img"></div></div>
+    <div class="hexagon" style="left: calc(0.52 * var(--s)); top: calc(4.59 * var(--s));"><div class="img"></div></div>
   </div>
+  <script>
+    // Asignar imágenes aleatorias SIN repetición desde /fotos (solo JPEG existentes)
+    (function() {
+      var disponibles = [
+        'UnaVela_1.jpeg', 'UnaVela_2.jpeg', 'UnaVela_3.jpeg',
+        'DosVelas_1.jpeg', 'DosVelas_2.jpeg', 'DosVelas_3.jpeg',
+        'DosVelas_4.jpeg', 'DosVelas_5.jpeg', 'DosVelas_6.jpeg',
+        'Vela corta 5x3cm encendida.jpeg',
+        'Vela corta 5x3cm encendida .jpeg',
+        'Vela corta 5x3 cm encendida.jpeg',
+        '2 velas cortas 5x3cm.jpeg',
+        '2 velas cortas 5x3cm jarra.jpeg'
+      ];
+
+      function setRandomImage(el) {
+        var current = el.getAttribute('data-current') || '';
+        var next = current;
+        if (disponibles.length === 0) return;
+        while (next === current) {
+          next = disponibles[Math.floor(Math.random() * disponibles.length)];
+          if (disponibles.length === 1) break;
+        }
+        el.setAttribute('data-current', next);
+        el.style.backgroundImage = "url('./fotos/" + encodeURIComponent(next) + "')";
+      }
+
+      var imgs = document.querySelectorAll('.hexagon .img');
+      imgs.forEach(function(el, idx) {
+        // Asignación inicial inmediata
+        setRandomImage(el);
+        // Cada hexágono tiene un desfase de 0.8s según CSS (nth-child)
+        var delayMs = Math.max(0, idx * 800);
+        setTimeout(function() {
+          setRandomImage(el);
+          setInterval(function() { setRandomImage(el); }, 8000);
+        }, delayMs);
+      });
+    })();
+  </script>
 </body>
 </html>
 
