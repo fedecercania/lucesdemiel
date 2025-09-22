@@ -124,8 +124,10 @@
     .chat-input { flex: 1; padding: 10px; border: 1px solid #e5e7eb; border-radius: 20px; outline: none; }
     .chat-send { background: #1faa00; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; }
     @media (max-width: 600px) {
-      .chat-widget { width: calc(100vw - 40px); height: 70vh; bottom: 80px; right: 20px; }
+      .chat-widget { width: 100vw; height: 100vh; bottom: 0; right: 0; left: 0; border-radius: 0; }
     }
+    /* Bloquear scroll del documento cuando el chat esté abierto (solo móvil) */
+    @media (max-width: 600px) { body.chat-open { overflow: hidden; } }
     .reserve h3 { margin: 0 0 10px; color: currentColor; }
     .form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .form .full { grid-column: 1 / -1; }
@@ -439,12 +441,16 @@ ${modalidadTexto}
       const widget = document.getElementById('chat-widget');
       widget.classList.toggle('open');
       if (widget.classList.contains('open')) {
+        // Evitar scroll del documento en móvil
+        document.body.classList.add('chat-open');
         // Generar UUID solo la primera vez que se abre
         if (!chatSessionId) {
           chatSessionId = generateUUID();
           console.log('Nueva sesión de chat:', chatSessionId);
         }
         document.getElementById('chat-input').focus();
+      } else {
+        document.body.classList.remove('chat-open');
       }
     }
 
